@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.flitsneak.dao.CheckitemDao">
+    <!-- 插入检查项-->
+    <insert id="add" parameterType="com.flitsneak.pojo.CheckItem">
+        INSERT INTO t_checkitem(code,name,sex,age,price,type,remark,attention)
+           VALUES
+        (#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
+    </insert>
+
+    <select id="selectByCondition" parameterType="String" resultType="com.flitsneak.pojo.CheckItem">
+        SELECT * FROM t_checkitem
+        <if test="value != null and value.length > 0">
+            WHERE code = #{value} or name = #{value}
+        </if>
+    </select>
+</mapper>
