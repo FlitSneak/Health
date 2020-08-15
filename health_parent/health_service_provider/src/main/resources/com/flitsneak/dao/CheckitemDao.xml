@@ -15,4 +15,51 @@
             WHERE code = #{value} or name = #{value}
         </if>
     </select>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM t_checkitem WHERE id = #{id}
+    </delete>
+
+    <select id="findCountByCheckItemId" parameterType="int" resultType="long">
+        SELECT COUNT(*) FROM t_checkgroup_checkitem WHERE checkitem_id = #{checkitem_id}
+    </select>
+
+    <select id="findById" parameterType="int" resultType="com.flitsneak.pojo.CheckItem">
+        SELECT* FROM t_checkitem WHERE id = #{id}
+    </select>
+
+    <update id="edit" parameterType="com.flitsneak.pojo.CheckItem">
+        UPDATE t_checkitem
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="code != null">
+                code = #{code},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="attention != null">
+                attention = #{attention},
+            </if>
+            <if test="remark != null">
+                remark = #{remark}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findAll" resultType="com.flitsneak.pojo.CheckItem">
+        SELECT * FROM t_checkitem
+    </select>
 </mapper>
