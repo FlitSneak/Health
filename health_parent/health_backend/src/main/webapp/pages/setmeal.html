@@ -240,9 +240,9 @@
                     total:100,
                     queryString:null,
                 },
-                dataList: [],//列表数据
-                formData: {},//表单数据
-                tableData:[],//添加表单窗口中检查组列表数据
+                dataList: [],//列表数据,用于分页展示的数据。
+                formData: {},//表单数据，检查套餐表单。
+                tableData:[],//添加表单窗口中检查组列表数据。
                 checkgroupIds:[],//添加表单窗口中检查组复选框对应id
                 dialogFormVisible: false//控制添加窗口显示/隐藏
             },
@@ -252,6 +252,13 @@
             methods: {
                 //文件上传成功后的钩子，response为服务端返回的值，file为当前上传的文件封装成的js对象
                 handleAvatarSuccess(response, file) {
+                    console.log(response);
+                    this.imageUrl = "http://qf5klufbg.hd-bkt.clouddn.com/"+response.data;
+                    this.$message({
+                        message: response.message,
+                        type: response.flag ? 'success' : 'error'
+                    });
+                    this.formData.img = response.data;
                 },
                 //上传图片之前执行
                 beforeAvatarUpload(file) {
@@ -267,18 +274,58 @@
                 },
                 //添加
                 handleAdd () {
+                    axios.post("/setmeal/add.do?checkgroupIds=" + this.checkgroupIds,this.formData).then((res)=>{
+                        this.dialogFormVisible = false;
+                        if(res.data.flag){
+                            this.$message({
+                                message: res.data.message,
+                                type:'success'
+                            });
+                        }else {
+                            this.$message.error(res.data.message);
+                        }
+                    }).finally(()=>{
+                        this.findPage();
+                    });
+
                 },
                 //分页查询
                 findPage() {
+                    var param = {
+                        currentPage:this.pagination.currentPage,
+                        pageSize:this.pagination.pageSize,
+                        queryString:this.pagination.queryString
+                    };
+                    axios.post("/setmeal/findPage.do",param).then((res)=>{
+                        if(res.data.flag){
+                            this.dataList = res.data.data.rows;
+                            this.pagination.total=res.data.data.total;
+                        }
+                    });
                 },
                 // 重置表单
                 resetForm() {
+                    this.formData={};
+                    this.activeName='first';
+                    this.checkitemIds=[];
+                    this.imageUrl=null;
                 },
                 // 弹出添加窗口
                 handleCreate() {
+                    this.dialogFormVisible =true;
+                    this.resetForm();
+                    axios.get("/setmeal/findAll.do").then((res)=>{
+                        if(res.data.flag){
+                            this.tableData = res.data.data;
+                        }else {
+                            this.$message.error(res.data.message);
+                        }
+                    });
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
                 }
             }
         })

@@ -1,0 +1,30 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.flitsneak.dao.SetmealDao">
+    <select id="findPage" parameterType="String" resultType="com.flitsneak.pojo.Setmeal">
+        SELECT * FROM t_setmeal
+        <if test="value != null and value.length > 0">
+            WHERE code = #{value} or name = #{value} or helpCode =#{value}
+        </if>
+    </select>
+
+    <select id="findAll" resultType="com.flitsneak.pojo.CheckGroup">
+        SELECT * FROM t_checkgroup
+    </select>
+
+    <insert id="add" parameterType="com.flitsneak.pojo.Setmeal">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO t_setmeal(code,name,sex,age,helpCode,price,remark,attention,img)
+        VALUES
+        (#{code},#{name},#{sex},#{age},#{helpCode},#{price},#{remark},#{attention},#{img})
+    </insert>
+
+    <insert id="addCgAndSm" parameterType="map">
+        INSERT INTO t_setmeal_checkgroup(setmeal_id,checkgroup_id)
+        VALUES
+        (#{setmeal_id},#{checkgroup_id})
+    </insert>
+
+</mapper>

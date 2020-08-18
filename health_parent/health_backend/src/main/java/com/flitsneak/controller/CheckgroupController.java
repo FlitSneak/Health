@@ -17,9 +17,9 @@ public class CheckgroupController {
 
     @Reference
     private CheckGroupService checkGroupService;
-
+   //@RequestParam省略了就获取不到值，坑了三个小时！！如果name值和前台一样就不需要requstParam!
     @PostMapping("/add")
-    public Result add(@RequestBody CheckGroup checkGroup,Integer[] checkIds){
+    public Result add(@RequestBody CheckGroup checkGroup,@RequestParam("checkitemIds")Integer[] checkIds){
         try {
             checkGroupService.add(checkGroup,checkIds);
             return new Result(true, MessageConstant.ADD_CHECKGROUP_SUCCESS);
@@ -59,7 +59,7 @@ public class CheckgroupController {
     }
 
     @PostMapping("/edit")
-    public Result edit(@RequestBody CheckGroup checkGroup,Integer[] ids){
+    public Result edit(@RequestBody CheckGroup checkGroup,@RequestParam("checkitemIds")Integer[] ids){
         try {
             checkGroupService.edit(checkGroup,ids);
             return new Result(true,MessageConstant.EDIT_CHECKGROUP_SUCCESS);
